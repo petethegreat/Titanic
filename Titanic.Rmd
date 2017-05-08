@@ -1,0 +1,24 @@
+---
+title: "Titanic Prediction"
+output:
+  html_document:
+    mathjax: "https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.1/MathJax.js?config=TeX-AMS-MML_HTMLorMML"
+  pdf_document:
+    toc: true
+---
+
+
+# Introduction
+Want to do some prediction stuff using machine learning in R. Will mess around in an Rmd here, then go through the same things in python through a kaggle kernel.
+
+# Data
+
+load the data, take a quick look. Make a couple plots.
+
+```{r}
+train<-read.csv('titanic_train.csv')
+str(train)
+```
+
+
+

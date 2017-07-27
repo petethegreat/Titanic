@@ -7,18 +7,49 @@ output:
     toc: true
 ---
 
+# blah
+
+Have a random forest in kaggle. Want to reproduce that here, tidy it, then upload as a script and publish.
+This should just do that random forest, and create the test predictions for submission
+
+# Also
+
+do another model, svm or something
+
+# Stacking and Ensembling
+
+Start some stack/ensembling stuff in just python
+write some helper functions and stuff. output predictions
+Tidy this and put it in a script/Rmd
+
+
 
 # Introduction
-Want to do some prediction stuff using machine learning in R. Will mess around in an Rmd here, then go through the same things in python through a kaggle kernel.
+Want to do some prediction stuff using machine learning in Python, using scikit-learn. Will get things sorted here, and then upload this to kaggle as a script
 
-# Data
 
-load the data, take a quick look. Make a couple plots.
+# setup
 
-```{r}
-train<-read.csv('titanic_train.csv')
-str(train)
+```{python}
+import numpy as np 
+import pandas as pd 
+
+from matplotlib import pyplot as plt
+import matplotlib
+import seaborn as sns
+
+plt.rcParams["figure.figsize"] = (12,12)
+
 ```
 
+load data, take a quick look
+
+```{python}
+
+data = pd.read_csv('titanic_train.csv')
+print(data.head())
+print(data.describe())
+print(data.describe(include=['O']))
+```
 
 

@@ -120,28 +120,39 @@ $(document).ready(function () {
 </div>
 
 
+<div id="blah" class="section level1">
+<h1>blah</h1>
+<p>Have a random forest in kaggle. Want to reproduce that here, tidy it, then upload as a script and publish. This should just do that random forest, and create the test predictions for submission</p>
+</div>
+<div id="also" class="section level1">
+<h1>Also</h1>
+<p>do another model, svm or something</p>
+</div>
+<div id="stacking-and-ensembling" class="section level1">
+<h1>Stacking and Ensembling</h1>
+<p>Start some stack/ensembling stuff in just python write some helper functions and stuff. output predictions Tidy this and put it in a script/Rmd</p>
+</div>
 <div id="introduction" class="section level1">
 <h1>Introduction</h1>
-<p>Want to do some prediction stuff using machine learning in R. Will mess around in an Rmd here, then go through the same things in python through a kaggle kernel.</p>
+<p>Want to do some prediction stuff using machine learning in Python, using scikit-learn. Will get things sorted here, and then upload this to kaggle as a script</p>
 </div>
-<div id="data" class="section level1">
-<h1>Data</h1>
-<p>load the data, take a quick look. Make a couple plots.</p>
-<pre class="r"><code>train&lt;-read.csv('titanic_train.csv')
-str(train)</code></pre>
-<pre><code>## 'data.frame':    891 obs. of  12 variables:
-##  $ PassengerId: int  1 2 3 4 5 6 7 8 9 10 ...
-##  $ Survived   : int  0 1 1 1 0 0 0 0 1 1 ...
-##  $ Pclass     : int  3 1 3 1 3 3 1 3 3 2 ...
-##  $ Name       : Factor w/ 891 levels &quot;Abbing, Mr. Anthony&quot;,..: 109 191 358 277 16 559 520 629 416 581 ...
-##  $ Sex        : Factor w/ 2 levels &quot;female&quot;,&quot;male&quot;: 2 1 1 1 2 2 2 2 1 1 ...
-##  $ Age        : num  22 38 26 35 35 NA 54 2 27 14 ...
-##  $ SibSp      : int  1 1 0 1 0 0 0 3 0 1 ...
-##  $ Parch      : int  0 0 0 0 0 0 0 1 2 0 ...
-##  $ Ticket     : Factor w/ 681 levels &quot;110152&quot;,&quot;110413&quot;,..: 525 596 662 50 473 276 86 396 345 133 ...
-##  $ Fare       : num  7.25 71.28 7.92 53.1 8.05 ...
-##  $ Cabin      : Factor w/ 148 levels &quot;&quot;,&quot;A10&quot;,&quot;A14&quot;,..: 1 83 1 57 1 1 131 1 1 1 ...
-##  $ Embarked   : Factor w/ 4 levels &quot;&quot;,&quot;C&quot;,&quot;Q&quot;,&quot;S&quot;: 4 2 4 4 4 3 4 4 4 2 ...</code></pre>
+<div id="setup" class="section level1">
+<h1>setup</h1>
+<pre class="python"><code>import numpy as np 
+import pandas as pd 
+
+from matplotlib import pyplot as plt
+import matplotlib
+import seaborn as sns
+
+plt.rcParams[&quot;figure.figsize&quot;] = (12,12)
+</code></pre>
+<p>load data, take a quick look</p>
+<pre class="python"><code>import pandas as pd 
+data = pd.read_csv('titanic_train.csv')
+data.head()
+data.describe()
+data.describe(include=['O'])</code></pre>
 </div>
 
 

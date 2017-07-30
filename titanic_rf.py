@@ -13,6 +13,11 @@ from matplotlib import pyplot as plt
 import matplotlib
 import seaborn as sns
 from sklearn.model_selection import train_test_split
+
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.model_selection import GridSearchCV
+import random
+
     
 
 def cleanData(data,lookup=None):
@@ -71,6 +76,43 @@ def cleanData(data,lookup=None):
     return data,lookup
 
 
+def tuneRF(xtrain,ytrain,model,tuneargs):
+    cvgrid = GridSearchCV(model,**tuneargs)
+    cvgrid.fit(xtrain,ytrain)
+    return cvgrid
+
+def printCVresults(thecvgrid):
+    ranking = thecvgrid.cv_results_['rank_test_score'] 
+    # list of Nones to hold output
+    strs = [None for i in ranking ]
+
+    #loop over grid results, insert performance in appropriate place in list
+    for index,rank in enumerate(ranking):
+        mean = thecvgrid.cv_results_['mean_test_score'][index]
+        stddev = thecvgrid.cv_results_['std_test_score'][index]
+        # format the results
+        thestr = '{r:2}- max_features: {mf:10}, n_estimators: {ne:4}, {m:5.4g} +/- {sd:5.4g}'.format(
+            r=rank,
+            mf=thecvgrid.cv_results_['params'][index]['max_features'],
+            ne=thecvgrid.cv_results_['params'][index]['n_estimators'],
+            m=mean,
+            sd=stddev
+        )
+        
+        # if there are ties, adjust the ranking index
+        # (if two parameter combinations score the same,
+        # the second is ordered as if it were ranked one worse)
+        checktie = rank -1 
+        while strs[checktie]:
+            checktie +=1
+        strs[checktie] = thestr
+
+    # print stuff    
+    for i in strs:
+        print(i)
+
+
+
 def dostuff(splitseed=96,splitfrac=0.2):
 
     # load data
@@ -80,11 +122,11 @@ def dostuff(splitseed=96,splitfrac=0.2):
     # copy passengerid for test data
     # this is dropped in the cleaning (so our model is more than just a pid->survived lookup table)
 
-    print(train_raw.describe())
+    # print(train_raw.describe())
     test_pid = test_raw['PassengerId'].copy(deep=True)
 
     train_clean, lookup = cleanData(train_raw)
-    X_test ,lookup = cleanData(test_raw,lookup=lookup)
+    X_test ,dummy = cleanData(test_raw,lookup=lookup)
 
     Y = train_clean['Survived']
     X = train_clean.drop('Survived',axis=1)
@@ -93,8 +135,54 @@ def dostuff(splitseed=96,splitfrac=0.2):
     X_train, X_val, Y_train, Y_val = \
         train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
 
-    print(X_train.describe())
-    print(X_val.describe())
+    # print(X_train.describe())
+    # print(X_val.describe())
+
+    # set the seed for reproducability 
+    random.seed(42)
+
+    cvargs = {
+        'param_grid':{
+            'max_features': ['log2','sqrt',3],
+             'n_estimators': [100,200,300,500]},
+        'cv':10,
+        'n_jobs':2,
+        'refit':True,
+        # 'fit_params':{
+        #     'oob_score':True
+        # }
+    }
+    # figure out how to pass oobscore through the cv to the randomforest.
+
+
+
+
+    # cvgrid = tuneRF(X_train, Y_train,RandomForestClassifier(oob_score=True),cvargs)
+
+    # #printCVresults(cvgrid)
+
+    # #oob_score
+    # print('best rf oob_score = {oob}'.format(oob=cvgrid.best_estimator_.oob_score_))
+    # print('best cv score = {cvs}'.format(cvs=cvgrid.best_score_))
+
+    # # score on the validation set
+
+    # val_score = cvgrid.best_estimator_.score(X_val,Y_val)
+    # print('validation score = {vs:5.4g}'.format(vs=val_score))
+
+    # predicted = cvgrid.best_estimator_.predict(X_test)
+
+    # predicted.head()
+    print(X_test.head())
+    print(X_test.describe())
+    print(X_test.describe(include=['O']))
+
+    mess with cleandata, change lookup to a dict instead of an array, and onclude sex and fare as arrays in it.
+    for missing values in fare, use the median for that pclass.
+    
+
+
+
 
 
 def main():

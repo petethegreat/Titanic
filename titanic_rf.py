@@ -72,6 +72,10 @@ def cleanData(data,train=True):
     # drop some columns
     data = data.drop(['PassengerId','Ticket','Cabin','Name'],axis=1)
 
+    title is important. create this max_feature
+    also add family size. It won't hurt.'
+
+
 
     # split training into train and validation set
 
@@ -168,7 +172,7 @@ def dostuff(splitseed=96,splitfrac=0.2):
 
     cvgrid = tuneRF(X_train, Y_train,RandomForestClassifier(oob_score=True),cvargs)
 
-    #printCVresults(cvgrid)
+    printCVresults(cvgrid)
 
     # score on the validation set
     val_score = cvgrid.best_estimator_.score(X_val,Y_val)
@@ -183,7 +187,7 @@ def dostuff(splitseed=96,splitfrac=0.2):
     test_out = test_out.set_index('PassengerId')
     # print(test_out.head())
 
-    test_out.to_csv('./data/pete_titanic_rf_predictions.csv')
+    #test_out.to_csv('./data/pete_titanic_rf_predictions.csv')
 
 
 

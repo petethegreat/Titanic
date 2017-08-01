@@ -17,20 +17,24 @@ from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import GridSearchCV
 import random
+LOOKUP = {}
+
 
     
 
-def cleanData(data,lookup=None):
+def cleanData(data,train=True):
     """ 
     load the train and test data. 
     Any preprocessing derived from the train data is applied to the test data
     Create lookup table to impute age based on pclass and gender
     """
     #data = data.copy(deep=True)
-    train = False
-    if lookup is None:
-        lookup = np.zeros([2,3])
-        train = True
+    global LOOKUP
+    if train:
+        #median age by gender and pclass
+        LOOKUP['AgeGenderPclass'] = np.zeros([2,3])
+        # median fare by pclass
+        LOOKUP['FarePclass'] = np.zeros([3])
     sexdict = {0:'male', 1:'female'}
     
 
@@ -41,18 +45,23 @@ def cleanData(data,lookup=None):
     data['Sex'] = data['Sex'].astype('category')
     data['Embarked'] = data['Embarked'].astype('category')
 
-    # use the training data to create age lookup table
+    # use the training data to create age and fare lookup tables, to deal with missing data
     if train:
+        for pc in range(0,3):
+            #median fare per pclass
+            LOOKUP['FarePclass'][pc] = data[ data.Pclass == pc+1 ]['Fare'].median()
+            for s in [0,1]:
+                # median age by pclass and gender
+                thesex = sexdict[s]
+                LOOKUP['AgeGenderPclass'][s,pc] = data[ (data.Sex == thesex) & (data.Pclass == pc +1) ]['Age'].median()
+    
+    # fill missing values in dataframe based on lookup table
+    for pc in range(0,3):
+        data.loc[(data.Fare.isnull()) & (data.Pclass == pc+1),'Fare'] = LOOKUP['FarePclass'][pc]
+
         for s in [0,1]:
             thesex = sexdict[s]
-            for pc in range(0,3):
-                lookup[s,pc] = data[ (data.Sex == thesex) & (data.Pclass == pc +1) ]['Age'].median()
-    
-    # fill dataframe based on lookup table
-    for s in [0,1]:
-        thesex = sexdict[s]
-        for pc in range(0,3):
-            data.loc[(data.Sex ==thesex ) & ( data.Pclass == pc +1) & (data.Age.isnull()),'Age'] = lookup[s,pc]
+            data.loc[(data.Sex ==thesex ) & ( data.Pclass == pc +1) & (data.Age.isnull()),'Age'] = LOOKUP['AgeGenderPclass'][s,pc]
         
         # sum siblings spouses and parents
         #data['Family'] = data['SibSp'] + data['Parch']
@@ -73,12 +82,15 @@ def cleanData(data,lookup=None):
 
     # X_train, X_val,Y_train,Y_val = \
     #     train_test_split(X,Y,test_size=val_frac,random_state=rstate)
-    return data,lookup
+    return data
 
 
 def tuneRF(xtrain,ytrain,model,tuneargs):
     cvgrid = GridSearchCV(model,**tuneargs)
     cvgrid.fit(xtrain,ytrain)
+    #oob_score
+    print('best rf oob_score = {oob}'.format(oob=cvgrid.best_estimator_.oob_score_))
+    print('best cv score = {cvs}'.format(cvs=cvgrid.best_score_))
     return cvgrid
 
 def printCVresults(thecvgrid):
@@ -124,9 +136,10 @@ def dostuff(splitseed=96,splitfrac=0.2):
 
     # print(train_raw.describe())
     test_pid = test_raw['PassengerId'].copy(deep=True)
+    test_pid.columns=['PassengerId']
 
-    train_clean, lookup = cleanData(train_raw)
-    X_test ,dummy = cleanData(test_raw,lookup=lookup)
+    train_clean = cleanData(train_raw,train=True)
+    X_test  = cleanData(test_raw,train=False)
 
     Y = train_clean['Survived']
     X = train_clean.drop('Survived',axis=1)
@@ -152,35 +165,25 @@ def dostuff(splitseed=96,splitfrac=0.2):
         #     'oob_score':True
         # }
     }
-    # figure out how to pass oobscore through the cv to the randomforest.
+
+    cvgrid = tuneRF(X_train, Y_train,RandomForestClassifier(oob_score=True),cvargs)
+
+    #printCVresults(cvgrid)
+
+    # score on the validation set
+    val_score = cvgrid.best_estimator_.score(X_val,Y_val)
+    print('validation score = {vs:5.4g}'.format(vs=val_score))
 
 
+    # make predictions
+    predicted = cvgrid.best_estimator_.predict(X_test)
 
+    # form an output dataframe, write to csv
+    test_out = pd.DataFrame({'PassengerId':test_pid,'Survived':predicted})
+    test_out = test_out.set_index('PassengerId')
+    # print(test_out.head())
 
-    # cvgrid = tuneRF(X_train, Y_train,RandomForestClassifier(oob_score=True),cvargs)
-
-    # #printCVresults(cvgrid)
-
-    # #oob_score
-    # print('best rf oob_score = {oob}'.format(oob=cvgrid.best_estimator_.oob_score_))
-    # print('best cv score = {cvs}'.format(cvs=cvgrid.best_score_))
-
-    # # score on the validation set
-
-    # val_score = cvgrid.best_estimator_.score(X_val,Y_val)
-    # print('validation score = {vs:5.4g}'.format(vs=val_score))
-
-    # predicted = cvgrid.best_estimator_.predict(X_test)
-
-    # predicted.head()
-    print(X_test.head())
-    print(X_test.describe())
-    print(X_test.describe(include=['O']))
-
-    mess with cleandata, change lookup to a dict instead of an array, and onclude sex and fare as arrays in it.
-    for missing values in fare, use the median for that pclass.
-    
-
+    test_out.to_csv('./data/pete_titanic_rf_predictions.csv')
 
 
 

@@ -20,7 +20,8 @@ import random
 LOOKUP = {}
 
 
-    
+
+
 
 def cleanData(data,train=True):
     """ 
@@ -44,6 +45,13 @@ def cleanData(data,train=True):
     # map 'Sex' (string) to 'gender' (int)
     data['Sex'] = data['Sex'].astype('category')
     data['Embarked'] = data['Embarked'].astype('category')
+    data['Family'] = data['SibSp'] + data['Parch']
+
+    # data['Title'] = data['Name'].map(lambda x: x.split()[0])
+    titleregex = r'^(?P<surname>[^,]+), (?P<Title>[^\s]+)'
+    NameStuff = data['Name'].str.extract(titleregex,expand=True)
+    data['Title'] = NameStuff['Title']
+    data['Title'] = data['Title'].astype('category')
 
     # use the training data to create age and fare lookup tables, to deal with missing data
     if train:
@@ -67,25 +75,29 @@ def cleanData(data,train=True):
         #data['Family'] = data['SibSp'] + data['Parch']
 
     # code categorical varibales as one hot
-    data = pd.get_dummies(data=data,columns=['Sex','Embarked','Pclass'])
+    data = pd.get_dummies(data=data,columns=['Sex','Embarked','Pclass','Title'])
+    if train:
+        LOOKUP['columns_set'] = set(data.drop(['Survived'],axis=1).columns)
+    else:
+        missing_cols = LOOKUP['columns_set'] - set(data.columns)
+        for c in missing_cols:
+            data[c] =0
+        # test should be missing nothing now
+        extra_cols =set(data.columns) - LOOKUP['columns_set']
+        if len(extra_cols) >0 :
+            print(' the following features are present in test but were absent in training and will be dropped:')
+        for c in extra_cols:
+            print('  -{c}'.format(c=c))
+        data = data.drop(extra_cols,axis=1)
+
+
     
     # drop some columns
     data = data.drop(['PassengerId','Ticket','Cabin','Name'],axis=1)
 
-    title is important. create this max_feature
-    also add family size. It won't hurt.'
+    # title is important. create this max_feature
+    # also add family size. It won't hurt.'
 
-
-
-    # split training into train and validation set
-
-    # Y = train_raw['Survived']
-    # X = train_raw.drop('Survived',axis=1)
-
-    # X_test = test_raw
-
-    # X_train, X_val,Y_train,Y_val = \
-    #     train_test_split(X,Y,test_size=val_frac,random_state=rstate)
     return data
 
 
@@ -130,6 +142,7 @@ def printCVresults(thecvgrid):
 
 
 def dostuff(splitseed=96,splitfrac=0.2):
+    useval = splitfrac > 0.0
 
     # load data
     train_raw = pd.read_csv('./data/titanic_train.csv')
@@ -147,10 +160,19 @@ def dostuff(splitseed=96,splitfrac=0.2):
 
     Y = train_clean['Survived']
     X = train_clean.drop('Survived',axis=1)
+    if useval:
+        # split train into training and validation
+        X_train, X_val, Y_train, Y_val = \
+            train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
+    else:
+        X_train = X
+        Y_train = Y
 
-    # split train into training and validation
-    X_train, X_val, Y_train, Y_val = \
-        train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
+    # print(X_train['Title'].unique())
+    # print(train_raw['Name'].head())
+    # print(X_train['Title'].head())
+
+
 
     # print(X_train.describe())
     # print(X_val.describe())
@@ -174,9 +196,10 @@ def dostuff(splitseed=96,splitfrac=0.2):
 
     printCVresults(cvgrid)
 
-    # score on the validation set
-    val_score = cvgrid.best_estimator_.score(X_val,Y_val)
-    print('validation score = {vs:5.4g}'.format(vs=val_score))
+    # score on the validation set, if appropriate
+    if useval:
+        val_score = cvgrid.best_estimator_.score(X_val,Y_val)
+        print('validation score = {vs:5.4g}'.format(vs=val_score))
 
 
     # make predictions
@@ -185,15 +208,16 @@ def dostuff(splitseed=96,splitfrac=0.2):
     # form an output dataframe, write to csv
     test_out = pd.DataFrame({'PassengerId':test_pid,'Survived':predicted})
     test_out = test_out.set_index('PassengerId')
-    # print(test_out.head())
+    print(test_out.head())
 
-    #test_out.to_csv('./data/pete_titanic_rf_predictions.csv')
+    # test_out.to_csv('./data/pete_titanic_rf_predictions.csv')
+    test_out.to_csv('./data/pete_titanic_rf_predictions_famTitle_sf{sf:03.2f}.csv'.format(sf=splitfrac))
 
 
 
 
 def main():
-    dostuff()
+    dostuff(splitfrac=0.0)
 
 
 

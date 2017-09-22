@@ -1,0 +1,237 @@
+************* Module titanic_ensemble
+C:  6, 0: Line too long (109/100) (line-too-long)
+C:  8, 0: Trailing whitespace (trailing-whitespace)
+C: 26, 0: Exactly one space required after comma
+    def __init__(self,name,model,cvargs):
+                     ^ (bad-whitespace)
+C: 26, 0: Exactly one space required after comma
+    def __init__(self,name,model,cvargs):
+                          ^ (bad-whitespace)
+C: 26, 0: Exactly one space required after comma
+    def __init__(self,name,model,cvargs):
+                                ^ (bad-whitespace)
+C: 34, 0: Exactly one space required after comma
+    def tuneModel(self,xtrain,ytrain):
+                      ^ (bad-whitespace)
+C: 34, 0: Exactly one space required after comma
+    def tuneModel(self,xtrain,ytrain):
+                             ^ (bad-whitespace)
+C: 36, 0: Exactly one space required after comma
+        cvgrid = GridSearchCV(self.Model,**self.CVargs)
+                                        ^ (bad-whitespace)
+C: 37, 0: Exactly one space required after comma
+        cvgrid.fit(xtrain,ytrain)
+                         ^ (bad-whitespace)
+C: 40, 0: Exactly one space required after comma
+        print('{name:20} best cv score = {cvs}'.format(name=self.Name,cvs=cvgrid.best_score_))
+                                                                     ^ (bad-whitespace)
+C: 84, 0: Trailing whitespace (trailing-whitespace)
+C: 86, 0: Exactly one space required after comma
+    for pc in range(0,3):
+                     ^ (bad-whitespace)
+C: 89, 0: Exactly one space required after comma
+        for s in [0,1]:
+                   ^ (bad-whitespace)
+C:128, 0: Trailing whitespace (trailing-whitespace)
+C:130, 0: No space allowed before bracket
+    strs = [None for i in ranking ]
+                                  ^ (bad-whitespace)
+C:133, 0: Exactly one space required after comma
+    for index,rank in enumerate(ranking):
+             ^ (bad-whitespace)
+C:137, 0: Line too long (101/100) (line-too-long)
+C:144, 0: Trailing whitespace (trailing-whitespace)
+C:148, 0: Trailing whitespace (trailing-whitespace)
+C:150, 0: Exactly one space required after assignment
+            checktie +=1
+                     ^^ (bad-whitespace)
+C:153, 0: Trailing whitespace (trailing-whitespace)
+C:165, 0: Exactly one space required after comma
+            'max_features': ['log2','sqrt',3],
+                                   ^ (bad-whitespace)
+C:165, 0: Exactly one space required after comma
+            'max_features': ['log2','sqrt',3],
+                                          ^ (bad-whitespace)
+C:166, 0: Wrong hanging indentation (remove 1 space).
+             'n_estimators': [100,200,300,500]},
+            |^ (bad-continuation)
+C:166, 0: Exactly one space required after comma
+             'n_estimators': [100,200,300,500]},
+                                 ^ (bad-whitespace)
+C:166, 0: Exactly one space required after comma
+             'n_estimators': [100,200,300,500]},
+                                     ^ (bad-whitespace)
+C:166, 0: Exactly one space required after comma
+             'n_estimators': [100,200,300,500]},
+                                         ^ (bad-whitespace)
+C:196, 0: Unnecessary parens after 'return' keyword (superfluous-parens)
+C:200, 0: Exactly one space required after comma
+def dostuff(splitseed=96,splitfrac=0.2):
+                        ^ (bad-whitespace)
+C:210, 0: Exactly one space required around assignment
+    test_pid.columns=['PassengerId']
+                    ^ (bad-whitespace)
+C:212, 0: Exactly one space required after comma
+    train_clean = cleanData(train_raw,train=True)
+                                     ^ (bad-whitespace)
+C:213, 0: Exactly one space required before assignment
+    X_test  = cleanData(test_raw,train=False)
+            ^ (bad-whitespace)
+C:213, 0: Exactly one space required after comma
+    X_test  = cleanData(test_raw,train=False)
+                                ^ (bad-whitespace)
+C:216, 0: Exactly one space required after comma
+    X = train_clean.drop('Survived',axis=1)
+                                   ^ (bad-whitespace)
+C:220, 0: Exactly one space required after comma
+            train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
+                              ^ (bad-whitespace)
+C:220, 0: Exactly one space required after comma
+            train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
+                                ^ (bad-whitespace)
+C:220, 0: Exactly one space required after comma
+            train_test_split(X,Y,test_size=splitfrac,random_state=splitseed)
+                                                    ^ (bad-whitespace)
+C:225, 0: Trailing whitespace (trailing-whitespace)
+C:232, 0: Exactly one space required after comma
+        themodel.tuneModel(X_train,Y_train)
+                                  ^ (bad-whitespace)
+C:237, 0: Exactly one space required after comma
+            val_score = themodel.TunedModel.score(X_val,Y_val)
+                                                       ^ (bad-whitespace)
+C:238, 0: Exactly one space required after comma
+            print('{mname} validation score = {vs:5.4g}'.format(mname=themodel.Name,vs=val_score))
+                                                                                   ^ (bad-whitespace)
+C:243, 0: Exactly one space required after comma
+        cname = 'surv_{mname}'.format(mname=re.sub(' ','_',themodel.Name))
+                                                      ^ (bad-whitespace)
+C:243, 0: Exactly one space required after comma
+        cname = 'surv_{mname}'.format(mname=re.sub(' ','_',themodel.Name))
+                                                          ^ (bad-whitespace)
+C: 25, 0: Missing class docstring (missing-docstring)
+C: 25, 0: Old-style class defined. (old-style-class)
+C: 34, 4: Missing method docstring (missing-docstring)
+R: 25, 0: Too few public methods (1/2) (too-few-public-methods)
+W: 52, 4: Using global for 'LOOKUP' but no assignment is done (global-variable-not-assigned)
+C:200, 0: Missing function docstring (missing-docstring)
+R:200, 0: Too many local variables (20/15) (too-many-locals)
+C:258, 0: Missing function docstring (missing-docstring)
+C: 12, 0: standard import "import re" comes before "import numpy as np" (wrong-import-order)
+
+
+Report
+======
+115 statements analysed.
+
+Statistics by type
+------------------
+
++---------+-------+-----------+-----------+------------+---------+
+|type     |number |old number |difference |%documented |%badname |
++=========+=======+===========+===========+============+=========+
+|module   |1      |1          |=          |100.00      |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|class    |1      |1          |=          |0.00        |0.00     |
++---------+-------+-----------+-----------+------------+---------+
+|method   |2      |2          |=          |50.00       |50.00    |
++---------+-------+-----------+-----------+------------+---------+
+|function |5      |5          |=          |60.00       |60.00    |
++---------+-------+-----------+-----------+------------+---------+
+
+
+
+External dependencies
+---------------------
+::
+
+    numpy (titanic_ensemble)
+    pandas (titanic_ensemble)
+    sklearn 
+      \-ensemble (titanic_ensemble)
+      \-model_selection (titanic_ensemble)
+      \-svm (titanic_ensemble)
+
+
+
+Raw metrics
+-----------
+
++----------+-------+------+---------+-----------+
+|type      |number |%     |previous |difference |
++==========+=======+======+=========+===========+
+|code      |144    |54.55 |144      |=          |
++----------+-------+------+---------+-----------+
+|docstring |25     |9.47  |25       |=          |
++----------+-------+------+---------+-----------+
+|comment   |54     |20.45 |54       |=          |
++----------+-------+------+---------+-----------+
+|empty     |41     |15.53 |41       |=          |
++----------+-------+------+---------+-----------+
+
+
+
+Duplication
+-----------
+
++-------------------------+------+---------+-----------+
+|                         |now   |previous |difference |
++=========================+======+=========+===========+
+|nb duplicated lines      |0     |0        |=          |
++-------------------------+------+---------+-----------+
+|percent duplicated lines |0.000 |0.000    |=          |
++-------------------------+------+---------+-----------+
+
+
+
+Messages by category
+--------------------
+
++-----------+-------+---------+-----------+
+|type       |number |previous |difference |
++===========+=======+=========+===========+
+|convention |49     |77       |-28.00     |
++-----------+-------+---------+-----------+
+|refactor   |2      |2        |=          |
++-----------+-------+---------+-----------+
+|warning    |1      |1        |=          |
++-----------+-------+---------+-----------+
+|error      |0      |0        |=          |
++-----------+-------+---------+-----------+
+
+
+
+Messages
+--------
+
++-----------------------------+------------+
+|message id                   |occurrences |
++=============================+============+
+|bad-whitespace               |32          |
++-----------------------------+------------+
+|trailing-whitespace          |7           |
++-----------------------------+------------+
+|missing-docstring            |4           |
++-----------------------------+------------+
+|line-too-long                |2           |
++-----------------------------+------------+
+|wrong-import-order           |1           |
++-----------------------------+------------+
+|too-many-locals              |1           |
++-----------------------------+------------+
+|too-few-public-methods       |1           |
++-----------------------------+------------+
+|superfluous-parens           |1           |
++-----------------------------+------------+
+|old-style-class              |1           |
++-----------------------------+------------+
+|global-variable-not-assigned |1           |
++-----------------------------+------------+
+|bad-continuation             |1           |
++-----------------------------+------------+
+
+
+
+Global evaluation
+-----------------
+Your code has been rated at 5.48/10 (previous run: 3.04/10, +2.43)
+

@@ -21,6 +21,7 @@ from sklearn.ensemble import AdaBoostClassifier
 from sklearn.discriminant_analysis import LinearDiscriminantAnalysis
 from sklearn.svm import SVC
 from sklearn.model_selection import GridSearchCV
+from sklearn.linear_model import LogisticRegression
 LOOKUP = {}
 MAJORITY = 1
 
@@ -35,6 +36,7 @@ class ModelStuff(object):
         self.CVargs = cvargs
         self.TunedModel = None
         self.CVgrid = None
+        self.weight=1.0
     ##############################################################
 
     def tuneModel(self, xtrain, ytrain):
@@ -213,6 +215,24 @@ def setupModels():
             model=LinearDiscriminantAnalysis(),
             cvargs=cvargs)
         )
+
+    # Logistic regression
+    cvargs = {
+        'param_grid':{
+            'solver':['svd', 'lsqr'],
+            # 'shrinkage':['auto', 'none']
+            },
+        'cv':10,
+        'n_jobs':2,
+        'refit':True,
+    }
+    Models.append(
+        ModelStuff(
+            name='LDA',
+            model=LinearDiscriminantAnalysis(),
+            cvargs=cvargs)
+        )
+
 
 
     ## SVM
